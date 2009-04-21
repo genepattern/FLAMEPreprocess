@@ -1,4 +1,4 @@
-#FLAMEpreprocess
+#FLAMEPreprocess
 #Mon Jan 12 14:53:15 EST 2009
 JVMLevel=2.7
 author=
@@ -84,4 +84,4 @@ requiredPatchURLs=
 serializedModel=
 taskType=FLAME
 userid=xinlihu
-version=Updated documentation
+version=Renamed module
