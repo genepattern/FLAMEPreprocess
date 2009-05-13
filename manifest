@@ -50,7 +50,7 @@ p4_type=java.lang.String
 p4_value=T=yes;F=no
 
 p5_default_value=
-p5_description=A comma-separated list of channel numbers indicating which columns (antibodies) to keep e.g.: 1, 2, 3, 7.
+p5_description=A comma-separated list of channel numbers indicating which columns (antibodies) to keep (e.g., 1, 2, 3, 7).
 p5_fileFormat=
 p5_name=channels
 p5_optional=
@@ -59,7 +59,7 @@ p5_type=java.lang.String
 p5_value=
 
 p6_default_value=
-p6_description=A comma-separated list of channel/antibody names that corresponds to the channel numbers e.g.: FSC, SSC, CD4, CD45RA.
+p6_description=A comma-separated list of channel/antibody names that corresponds to the channel numbers (e.g., FSC, SSC, CD4, CD45RA).
 p6_fileFormat=
 p6_name=channel.names
 p6_optional=
@@ -84,4 +84,4 @@ requiredPatchURLs=
 serializedModel=
 taskType=FLAME
 userid=xinlihu
-version=Renamed module
+version=updated doc
