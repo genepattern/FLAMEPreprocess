@@ -44,8 +44,12 @@ dataset, #full pathname to zipped data files
 remove_dead, #whether to remove dead cells automatically
 channels,
 channel_names,
+scatter_channels = "1,2",
 filetype, #{fcs, txt}
+transformation = "logicle", #none, logicle, arcsinh
 r, #10000,262144
+logicle_cofactor = 3,
+arcsinh_cofactor = 250,
 output_prefix #<studyname_dataname>
 ){
 
@@ -62,6 +66,8 @@ if(length(na.omit(columns)) != length(columns))
     stop("channels must be integer values ")
 }
 print(columns)
+
+scatter_channels <- as.numeric(strsplit(scatter_channels,',')[[1]])
 
 headers <- strsplit(channel_names,',')[[1]]
 print(headers)
@@ -87,8 +93,12 @@ if(libdir!='')
 
 suppressMessages(library(flowCore))
 
-lTrans <<- logicleTransform("logicle", r=10000)
-lTrans.2 <<- logicleTransform("logicle", r=262144)
+lTrans <<- logicleTransform("logicle", d=logicle_cofactor,r=10000)
+lTrans.2 <<- logicleTransform("logicle", d=logicle_cofactor, r=262144)
+arcsinh <- function(x,c=arcsinh_cofactor) {
+	f = log(x/c + sqrt((x/c)^2+1))
+	return(f)
+}
 
 parDefault <- function(exp){
   vm <- data.frame(labelDescription=c(name="Name of Parameter",
@@ -165,20 +175,27 @@ if (filetype == "fcs") {
 		logicledata <- c()
 		for (c in columns) {
 			thiscolumn <- matrix(data[,c],dimnames = list(c(1:(dim(data)[1])),c("this")))
-			#names(thiscolumn) = "this"
-			if (c!=1 && c!=2) {
-			param <- parDefault(thiscolumn)
-			ff <- new("flowFrame",exprs=as.matrix(thiscolumn),parameters=param)
-			if (r==10000) {
-			transform <- transform(ff, `this` = lTrans(`this`))
+			if (transformation=="logicle") {
+				if (!any(c==scatter_channels)) {#if (c!=1 && c!=2) {
+					param <- parDefault(thiscolumn)
+					ff <- new("flowFrame",exprs=as.matrix(thiscolumn),parameters=param)
+					if (r==10000) {
+						transform <- transform(ff, `this` = lTrans(as.real(`this`)))
+					}
+					if (r==262144) {
+						transform <- transform(ff, `this` = lTrans.2(as.real(`this`)))
+					}
+					thiscolumn <- exprs(transform)
+				}
 			}
-			if (r==262144) {
-			transform <- transform(ff, `this` = lTrans.2(`this`))
-			}
-			thiscolumn <- exprs(transform)
+			if (transformation=="arcsinh") {
+				if (!any(c==scatter_channels)) {#if (c!=1 && c!=2) {
+					thiscolumn <- arcinh(thiscolumn)
+				}
 			}
 			logicledata <- cbind(logicledata,thiscolumn)
 		}
+		logicledata <- na.omit(logicledata)
 		write.table(logicledata, file = paste(filename,".preprocessed.txt", sep = ""),sep = "\t", row.names = F,  col.names = headers, quote = F)
 	}
 }
@@ -188,8 +205,8 @@ if (filetype == "txt") {
 		cat(i,'\n')
 		filename <- strsplit(datafiles[i], "\\.txt")
 		file <- read.table(datafiles[i],header=F,skip=1)
-		file <- data.frame(file)
-		data <- subset(file, select = columns)
+		data<- data.frame(file)
+#		data <- subset(file, select = columns)
 
 		if (remove_dead == "T") {
 #			remove dead cells using skew-t g=4
@@ -219,23 +236,30 @@ if (filetype == "txt") {
 			#dead-removed data
 		}
 
-		logicledata <- matrix(nrow= nrow(data),ncol=length(columns))
-		for (c in columns){
-			thiscolumn <- subset(data,select=c)
-			names(thiscolumn) <- "this"
-			if (c!=1 && c!=2) {
-			param <- parDefault(thiscolumn)
-			ff <- new("flowFrame",exprs=as.matrix(thiscolumn),parameters=param)
-			if (r==10000) {
-			transform <- transform(ff, `this` = lTrans(`this`))
+		logicledata <- c()#matrix(nrow= nrow(data),ncol=length(columns))
+		for (c in columns) {
+			thiscolumn <- matrix(data[,c],dimnames = list(c(1:(dim(data)[1])),c("this")))
+			if (transformation=="logicle") {
+				if (!any(c==scatter_channels)) {#if (c!=1 && c!=2) {
+					param <- parDefault(thiscolumn)
+					ff <- new("flowFrame",exprs=as.matrix(thiscolumn),parameters=param)
+					if (r==10000) {
+						transform <- transform(ff, `this` = lTrans(as.real(`this`)))
+					}
+					if (r==262144) {
+						transform <- transform(ff, `this` = lTrans.2(as.real(`this`)))
+					}
+					thiscolumn <- exprs(transform)
+				}
 			}
-			if (r==262144) {
-			transform <- transform(ff, `this` = lTrans.2(`this`))
+			if (transformation=="arcsinh") {
+				if (!any(c==scatter_channels)) {#if (c!=1 && c!=2) {
+					thiscolumn <- arcsinh(thiscolumn)
+				}
 			}
-			thiscolumn <- exprs(transform)
-			}
-			logicledata[,c] <- as.matrix(thiscolumn)
+			logicledata <- cbind(logicledata,thiscolumn)
 		}
+		logicledata <- na.omit(logicledata)
 		write.table(logicledata, file = paste(filename,".preprocessed.txt", sep = ""),sep = "\t", row.names = F,  col.names = headers, quote = F)
 	}
 }
