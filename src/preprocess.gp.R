@@ -47,7 +47,7 @@ channel_names,
 scatter_channels = "1,2",
 filetype, #{fcs, txt}
 transformation = "logicle", #none, logicle, arcsinh
-r, #10000,262144
+r, #10000=4-decade,262144=18-bit
 logicle_cofactor = 3,
 arcsinh_cofactor = 250,
 output_prefix #<studyname_dataname>
@@ -92,6 +92,19 @@ if(libdir!='')
 }
 
 suppressMessages(library(flowCore))
+
+logicle_cofactor <- as.numeric(logicle_cofactor)
+if(is.na(logicle_cofactor))
+{
+    stop("logical cofactor must be a number")
+}
+
+arcsinh_cofactor <- as.numeric(arcsinh_cofactor)
+if(is.na(arcsinh_cofactor))
+{
+    stop("arcsinh cofactor must be a number")
+}
+
 
 lTrans <<- logicleTransform("logicle", d=logicle_cofactor,r=10000)
 lTrans.2 <<- logicleTransform("logicle", d=logicle_cofactor, r=262144)
@@ -172,7 +185,7 @@ if (filetype == "fcs") {
 			#dead-removed data
 		}
 
-		logicledata <- c()
+		transformed_data <- c()
 		for (c in columns) {
 			thiscolumn <- matrix(data[,c],dimnames = list(c(1:(dim(data)[1])),c("this")))
 			if (transformation=="logicle") {
@@ -193,10 +206,10 @@ if (filetype == "fcs") {
 					thiscolumn <- arcinh(thiscolumn)
 				}
 			}
-			logicledata <- cbind(logicledata,thiscolumn)
+			transformed_data <- cbind(transformed_data,thiscolumn)
 		}
-		logicledata <- na.omit(logicledata)
-		write.table(logicledata, file = paste(filename,".preprocessed.txt", sep = ""),sep = "\t", row.names = F,  col.names = headers, quote = F)
+		transformed_data <- na.omit(transformed_data)
+		write.table(transformed_data, file = paste(filename,".preprocessed.txt", sep = ""),sep = "\t", row.names = F,  col.names = headers, quote = F)
 	}
 }
 
@@ -236,7 +249,7 @@ if (filetype == "txt") {
 			#dead-removed data
 		}
 
-		logicledata <- c()#matrix(nrow= nrow(data),ncol=length(columns))
+		transformed_data <- c()#matrix(nrow= nrow(data),ncol=length(columns))
 		for (c in columns) {
 			thiscolumn <- matrix(data[,c],dimnames = list(c(1:(dim(data)[1])),c("this")))
 			if (transformation=="logicle") {
@@ -257,10 +270,10 @@ if (filetype == "txt") {
 					thiscolumn <- arcsinh(thiscolumn)
 				}
 			}
-			logicledata <- cbind(logicledata,thiscolumn)
+			transformed_data <- cbind(transformed_data,thiscolumn)
 		}
-		logicledata <- na.omit(logicledata)
-		write.table(logicledata, file = paste(filename,".preprocessed.txt", sep = ""),sep = "\t", row.names = F,  col.names = headers, quote = F)
+		transformed_data <- na.omit(transformed_data)
+		write.table(transformed_data, file = paste(filename,".preprocessed.txt", sep = ""),sep = "\t", row.names = F,  col.names = headers, quote = F)
 	}
 }
 
