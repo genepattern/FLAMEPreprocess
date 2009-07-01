@@ -148,6 +148,7 @@ on.exit(cleanup())
 unzip.file(dataset, temp.dir)
 datafiles <- list.files(temp.dir, full.names = TRUE)
 
+cat("right before data fiel processing")
 #filter, log
 if (filetype == "fcs") {
 	filenames<-c()
@@ -156,6 +157,7 @@ if (filetype == "fcs") {
 		filename <- strsplit(datafiles[i], "\\.fcs")
 		file<-read.FCS(datafiles[i])
 		data <- exprs(file)
+		validate.num.channels(data, columns)
 
 		if (remove_dead == "T") {
 #			remove dead cells using skew-t g=4
@@ -219,6 +221,8 @@ if (filetype == "txt") {
 		filename <- strsplit(datafiles[i], "\\.txt")
 		file <- read.table(datafiles[i],header=F,skip=1)
 		data<- data.frame(file)
+		validate.num.channels(data, columns)
+
 #		data <- subset(file, select = columns)
 
 		if (remove_dead == "T") {
@@ -291,52 +295,77 @@ zip.file(libdir = libdir, files = "*.preprocessed.txt", outfile = paste(wkdir, "
 setwd(wkdir)
 }
 
+validate.num.channels <- function(data, channels)
+{
+    max.channel <- max(channels)
+    if(max.channel > ncol(data))
+    {
+        stop("Maximum channel number specified", max.channel, "is greater than number of channels in dataset", ncol(data))
+    }
+}
+
 install.required.packages <- function(libdir)
 {
 	if(!is.package.installed(libdir, "robustbase"))
     {
-		install.package(libdir,,, "robustbase_0.4-5.tar.gz")
+		install.package(libdir, "robustbase_0.4-5.zip", "robustbase_0.4-5.tgz", "robustbase_0.4-5.tar.gz")
 	}
 	if(!is.package.installed(libdir, "pcaPP"))
     {
-		install.package(libdir,,, "pcaPP_1.6.tar.gz")
+		install.package(libdir, "pcaPP_1.6.zip", "pcaPP_1.6.tgz", "pcaPP_1.6.tar.gz")
 	}
     if(!is.package.installed(libdir, "mvtnorm"))
     {
-		install.package(libdir,,, "mvtnorm_0.9-4.tar.gz")
+		install.package(libdir, "mvtnorm_0.9-7.zip", "mvtnorm_0.9-7.tgz", "mvtnorm_0.9-7.tar.gz")
 	}
-
 	if(!is.package.installed(libdir, "rrcov"))
 	{
-		install.package(libdir,,, "rrcov_0.4-08.tar.gz")
+		install.package(libdir, "rrcov_0.5-01.zip", "rrcov_0.5-01.tgz", "rrcov_0.5-01.tar.gz")
 	}
 
     #-----------------------------------------
     if(!is.package.installed(libdir, "rpanel"))
     {
-		install.package(libdir,,, "rpanel_1.0-5.tar.gz")
+		install.package(libdir, "rpanel_1.0-5.zip", "rpanel_1.0-5.tgz", "rpanel_1.0-5.tar.gz")
 	}
     if(!is.package.installed(libdir, "ks"))
     {
-		install.package(libdir,,, "ks_1.5.10.tar.gz")
+		install.package(libdir, "ks_1.6.5.zip", "ks_1.6.5.tgz", "ks_1.6.5.tar.gz")
 	}
-
 	if(!is.package.installed(libdir, "feature"))
 	{
-		install.package(libdir,,, "feature_1.2.0.tar.gz")
+		install.package(libdir, "feature_1.2.3.tar.gz", "feature_1.2.3.tar.gz", "feature_1.2.3.tar.gz")
 	}
 
     #-------------------------------------------
     if(!is.package.installed(libdir, "Biobase"))
 	{
-		install.package(libdir,,, "Biobase_2.2.2.tar.gz")
+	    if(length(grep(R.version$os, "darwin9")) != 0)
+	    {
+	        mac_package <- "Biobase_2.2.2_leopard.tgz"
+	    }
+	    else
+	    {
+	        mac_package <- "Biobase_2.2.2_tiger.tgz"
+	    }
+
+		install.package(libdir, "Biobase_2.2.2.zip", mac_package, "Biobase_2.2.2.tar.gz")
 	}
 	if(!is.package.installed(libdir, "graph"))
 	{
-		install.package(libdir,,, "graph_1.20.0.tar.gz")
+		install.package(libdir, "graph_1.22.2.zip", "graph_1.22.2.tgz", "graph_1.22.2.tar.gz")
 	}
     if(!is.package.installed(libdir, "flowCore"))
 	{
-		install.package(libdir,,, "flowCore_1.8.1.tar.gz")
+	    if(length(grep(R.version$os, "darwin9")) != 0)
+	    {
+	        mac_package <- "flowCore_1.8.3_leopard.tgz"
+	    }
+	    else
+	    {
+	        mac_package <- "flowCore_1.8.3_tiger.tgz"
+	    }
+
+		install.package(libdir, "flowCore_1.8.3.zip", mac_package, "flowCore_1.8.3.tar.gz")
 	}
 }
