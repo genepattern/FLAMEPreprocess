@@ -205,7 +205,7 @@ if (filetype == "fcs") {
 			}
 			if (transformation=="arcsinh") {
 				if (!any(c==scatter_channels)) {#if (c!=1 && c!=2) {
-					thiscolumn <- arcinh(thiscolumn)
+					thiscolumn <- arcsinh(thiscolumn)
 				}
 			}
 			transformed_data <- cbind(transformed_data,thiscolumn)
