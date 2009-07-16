@@ -148,12 +148,11 @@ on.exit(cleanup())
 unzip.file(dataset, temp.dir)
 datafiles <- list.files(temp.dir, full.names = TRUE)
 
-cat("right before data fiel processing")
 #filter, log
 if (filetype == "fcs") {
 	filenames<-c()
 	for (i in 1:length(datafiles)) {
-		cat(i,'\n')
+		cat("processing file:" , datafiles[i],'\n')
 		filename <- strsplit(datafiles[i], "\\.fcs")
 		file<-read.FCS(datafiles[i])
 		data <- exprs(file)
