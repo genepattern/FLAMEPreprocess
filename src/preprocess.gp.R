@@ -147,12 +147,14 @@ on.exit(cleanup())
 
 unzip.file(dataset, temp.dir)
 datafiles <- list.files(temp.dir, full.names = TRUE)
+datafiles.names <- list.files(temp.dir, full.names=FALSE)
+
 
 #filter, log
 if (filetype == "fcs") {
 	filenames<-c()
 	for (i in 1:length(datafiles)) {
-		cat("processing file:" , datafiles[i],'\n')
+		cat("processing file:" , datafiles.names[i],'\n')
 		filename <- strsplit(datafiles[i], "\\.fcs")
 		file<-read.FCS(datafiles[i])
 		data <- exprs(file)
@@ -216,7 +218,7 @@ if (filetype == "fcs") {
 
 if (filetype == "txt") {
 	for (i in 1:length(datafiles)) {
-		cat(i,'\n')
+		cat("processing file:" , datafiles.names[i],'\n')
 		filename <- strsplit(datafiles[i], "\\.txt")
 		file <- read.table(datafiles[i],header=F,skip=1)
 		data<- data.frame(file)
