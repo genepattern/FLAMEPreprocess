@@ -46,10 +46,10 @@ channels,
 channel_names,
 scatter_channels = "1,2",
 filetype, #{fcs, txt}
-transformation = "logicle", #none, logicle, arcsinh
+transformation = "logicle", #none, logicle, arsinh or arcsinh
 r, #10000=4-decade,262144=18-bit
 logicle_cofactor = 3,
-arcsinh_cofactor = 250,
+arsinh_cofactor = 250,
 output_prefix #<studyname_dataname>
 ){
 
@@ -99,16 +99,16 @@ if(is.na(logicle_cofactor))
     stop("logical cofactor must be a number")
 }
 
-arcsinh_cofactor <- as.numeric(arcsinh_cofactor)
-if(is.na(arcsinh_cofactor))
+arsinh_cofactor <- as.numeric(arsinh_cofactor)
+if(is.na(arsinh_cofactor))
 {
-    stop("arcsinh cofactor must be a number")
+    stop("arsinh cofactor must be a number")
 }
 
 
 lTrans <<- logicleTransform("logicle", d=logicle_cofactor,r=10000)
 lTrans.2 <<- logicleTransform("logicle", d=logicle_cofactor, r=262144)
-arcsinh <- function(x,c=arcsinh_cofactor) {
+arsinh <- function(x,c=arsinh_cofactor) {
 	f = log(x/c + sqrt((x/c)^2+1))
 	return(f)
 }
@@ -204,9 +204,9 @@ if (filetype == "fcs") {
 					thiscolumn <- exprs(transform)
 				}
 			}
-			if (transformation=="arcsinh") {
+			if (transformation=="arsinh") {
 				if (!any(c==scatter_channels)) {#if (c!=1 && c!=2) {
-					thiscolumn <- arcsinh(thiscolumn)
+					thiscolumn <- arsinh(thiscolumn)
 				}
 			}
 			transformed_data <- cbind(transformed_data,thiscolumn)
@@ -270,9 +270,9 @@ if (filetype == "txt") {
 					thiscolumn <- exprs(transform)
 				}
 			}
-			if (transformation=="arcsinh") {
+			if (transformation=="arsinh") {
 				if (!any(c==scatter_channels)) {#if (c!=1 && c!=2) {
-					thiscolumn <- arcsinh(thiscolumn)
+					thiscolumn <- arsinh(thiscolumn)
 				}
 			}
 			transformed_data <- cbind(transformed_data,thiscolumn)
