@@ -119,6 +119,6 @@ quality=development
 requiredPatchLSIDs=
 requiredPatchURLs=
 serializedModel=
-taskType=FLAME
+taskType=Flow Cytometry
 userid=xinlihu
 version=Added ability to specify scatter channels and to select a transformation method
