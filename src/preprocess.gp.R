@@ -91,6 +91,11 @@ if(libdir!='')
     install.required.packages(libdir)
 }
 
+if(Sys.getenv("R_LIBS") != '')
+{
+    setLibPath(c(Sys.getenv("R_LIBS"), .libPaths()))
+}
+
 suppressMessages(library(flowCore))
 
 logicle_cofactor <- as.numeric(logicle_cofactor)
