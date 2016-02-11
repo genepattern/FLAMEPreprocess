@@ -120,4 +120,4 @@ requiredPatchURLs=
 serializedModel=
 taskType=Flow Cytometry
 userid=xinlihu
-version=Update for PbsJobRunner compatibility on GP@PSC and GP@IU
+version=Pin common.R to the one associated with v. 4 release of this module
