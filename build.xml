@@ -6,9 +6,6 @@
         <antcall target="prezip" />
         <zip destfile="${dest.dir}/${ant.project.name}.zip" whenempty="fail" defaultexcludes="true">
             <fileset dir="." includes="manifest, *.pdf, *.exe" />
-            <fileset dir="../../common/R">
-                <include name="common.R" />
-            </fileset>
             <fileset dir="src">
                 <include name="*.R" />
             </fileset>
