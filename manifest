@@ -1,9 +1,8 @@
 #FLAMEPreprocess
 #Mon Jan 12 14:53:15 EST 2009
 JVMLevel=2.7
-LSID=urn\:lsid\:broad.mit.edu\:cancer.software.genepattern.module.analysis\:00159\:1
+LSID=urn\:lsid\:broad.mit.edu\:cancer.software.genepattern.module.analysis\:00159\:4
 author=
-LSID=urn\:lsid\:broad.mit.edu\:cancer.software.genepattern.module.analysis\:00159\:999999999
 commandLine=<R-2.7.2> <libdir>preprocess.gp.R parseCmdLine <libdir> <dataset> <remove.dead> <channels> <channel.names> <scatter.channels> <file.type> <transformation> <data.scale> <logicle.cofactor> <arsinh.cofactor> <output.prefix>
 cpuType=any
 description=Performs preprocessing of .fcs or .txt flow cytometric data files
@@ -121,4 +120,4 @@ requiredPatchURLs=
 serializedModel=
 taskType=Flow Cytometry
 userid=xinlihu
-version=Added ability to specify scatter channels and to select a transformation method
+version=Update for PbsJobRunner compatibility on GP@PSC and GP@IU
