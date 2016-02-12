@@ -1,0 +1,20 @@
+#lsid=urn:lsid:broad.mit.edu:cancer.software.genepattern.module.analysis:00159:4.1
+#
+name: FLAMEPreprocess example
+module: FLAMEPreprocess
+params:
+    dataset: ftp://ftp.broadinstitute.org/pub/genepattern/example_files/FLAME/SMALL_phospho.lymphgated.fcs.zip
+    file.type: "fcs"
+    # 4-decade
+    data.scale: "10000"
+    # no
+    remove.dead: "F"
+    channels: "3,4,5,7"
+    channel.names: "SLP76,ZAP70,CD4,CD45RA"
+    scatter.channels: "1,2"
+    transformation: "logicle"
+    logicle.cofactor: "5"
+    arsinh.cofactor: "250"
+    output.prefix: "<dataset_basename>"
+assertions:
+        jobStatus: success
